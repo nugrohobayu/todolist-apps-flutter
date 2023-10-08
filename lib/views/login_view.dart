@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todolist_apps/components/c_button.dart';
 import 'package:todolist_apps/components/c_text_field.dart';
 import 'package:todolist_apps/views/register_view.dart';
+import 'package:todolist_apps/views/todo_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -74,7 +75,7 @@ class LoginView extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RegisterView(),
+                                builder: (context) => TodoView(name: ''),
                               ));
                         },
                       )),
