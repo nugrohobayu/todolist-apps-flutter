@@ -3,14 +3,9 @@ import 'package:todolist_apps/components/c_button.dart';
 import 'package:todolist_apps/components/c_text_field.dart';
 import 'package:todolist_apps/views/login_view.dart';
 
-class RegisterView extends StatefulWidget {
+class RegisterView extends StatelessWidget {
   const RegisterView({Key? key}) : super(key: key);
 
-  @override
-  State<RegisterView> createState() => _RegisterViewState();
-}
-
-class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context);
@@ -43,11 +38,17 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                   ),
                   SizedBox(height: mediaQuery.size.height * 0.1),
-                  CTextField(name: 'Email'),
+                  const CTextField(
+                    name: 'Email',
+                  ),
                   SizedBox(height: mediaQuery.size.height * 0.05),
-                  CTextField(name: 'Username'),
+                  const CTextField(
+                    name: 'Username',
+                  ),
                   SizedBox(height: mediaQuery.size.height * 0.05),
-                  CTextField(name: 'Password'),
+                  const CTextField(
+                    name: 'Password',
+                  ),
                   SizedBox(height: mediaQuery.size.height * 0.1),
                   Center(
                     child: CButton(
@@ -59,6 +60,30 @@ class _RegisterViewState extends State<RegisterView> {
                               builder: (context) => LoginView(),
                             ));
                       },
+                    ),
+                  ),
+                  SizedBox(
+                    height: mediaQuery.size.height * 0.15,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Have Account? "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginView(),
+                                ));
+                          },
+                          child: const Text(
+                            "Sign In",
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   )
                 ],

@@ -5,12 +5,34 @@ import 'package:todolist_apps/components/c_text_field.dart';
 import 'package:todolist_apps/views/register_view.dart';
 import 'package:todolist_apps/views/todo_view.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  TextEditingController ctrlUsername = TextEditingController();
+  TextEditingController ctrlPassword = TextEditingController();
+  bool isValidate = false;
+  bool showPassword = true;
+
+  Future<bool?> validateCtrl(String username, String password) async {
+    if (username.isEmpty) {
+      isValidate = true;
+    } else if (password.isEmpty) {
+      isValidate = true;
+    } else {
+      isValidate = false;
+    }
+    return isValidate;
+  }
 
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -60,11 +82,34 @@ class LoginView extends StatelessWidget {
                       SizedBox(
                         height: mediaQuery.size.height * 0.15,
                       ),
-                      CTextField(name: "Username"),
+                      CTextField(
+                        name: "Username",
+                        ctrl: ctrlUsername,
+                        validator:
+                            isValidate ? 'Username Can\'t Be Empty' : null,
+                      ),
                       SizedBox(
                         height: mediaQuery.size.height * 0.06,
                       ),
-                      CTextField(name: "Password"),
+                      CTextField(
+                        name: "Password",
+                        ctrl: ctrlPassword,
+                        obscureText: showPassword,
+                        validator:
+                            isValidate ? 'Password Can\'t Be Empty' : null,
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
+                          child: Icon(
+                            showPassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: mediaQuery.size.height * 0.15,
                       ),
@@ -72,11 +117,19 @@ class LoginView extends StatelessWidget {
                           child: CButton(
                         name: 'Login',
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TodoView(name: ''),
-                              ));
+                          setState(() {
+                            validateCtrl(ctrlUsername.text, ctrlPassword.text)
+                                .then((value) {
+                              if (value == false) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          TodoView(name: ctrlUsername.text),
+                                    ));
+                              }
+                            });
+                          });
                         },
                       )),
                       Center(
