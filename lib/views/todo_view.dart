@@ -71,32 +71,34 @@ class _TodoViewState extends State<TodoView> {
                 padding: const EdgeInsets.only(
                   top: 16,
                 ),
-                child: Column(
-                  children: [
-                    const Text("Add your to do list"),
-                    SizedBox(height: mediaQuery.size.height * 0.05),
-                    CTextField(
-                      name: 'Title',
-                      ctrl: ctrlTitle,
-                    ),
-                    SizedBox(height: mediaQuery.size.height * 0.05),
-                    CTextField(
-                      name: 'Detail',
-                      ctrl: ctrlDetail,
-                    ),
-                    SizedBox(height: mediaQuery.size.height * 0.05),
-                    CButton(
-                      name: 'Create',
-                      onPressed: () {
-                        setState(() {
-                          addList(ctrlTitle.text, ctrlDetail.text);
-                          if (mounted) {
-                            Navigator.pop(context);
-                          }
-                        });
-                      },
-                    )
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const Text("Add your to do list"),
+                      SizedBox(height: mediaQuery.size.height * 0.05),
+                      CTextField(
+                        name: 'Title',
+                        ctrl: ctrlTitle,
+                      ),
+                      SizedBox(height: mediaQuery.size.height * 0.05),
+                      CTextField(
+                        name: 'Detail',
+                        ctrl: ctrlDetail,
+                      ),
+                      SizedBox(height: mediaQuery.size.height * 0.08),
+                      CButton(
+                        name: 'Create',
+                        onPressed: () {
+                          setState(() {
+                            addList(ctrlTitle.text, ctrlDetail.text);
+                            if (mounted) {
+                              Navigator.pop(context);
+                            }
+                          });
+                        },
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

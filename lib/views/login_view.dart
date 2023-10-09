@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist_apps/components/c_button.dart';
 import 'package:todolist_apps/components/c_text_field.dart';
@@ -34,19 +33,27 @@ class _LoginViewState extends State<LoginView> {
     var mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              height: mediaQuery.size.height * 0.2,
+      body: Stack(
+        children: [
+          SizedBox(
+              width: mediaQuery.size.width,
+              height: mediaQuery.size.height,
+              child: Image.asset(
+                'assets/images/bg-login.png',
+                fit: BoxFit.cover,
+              )),
+          SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 32,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: mediaQuery.size.height * 0.12,
+                    height: mediaQuery.size.height * 0.04,
                   ),
                   const Text(
                     "Welcome Back!",
@@ -62,109 +69,84 @@ class _LoginViewState extends State<LoginView> {
                       fontSize: 18,
                     ),
                   ),
+                  SizedBox(
+                    height: mediaQuery.size.height * 0.15,
+                  ),
+                  CTextField(
+                    name: "Username",
+                    ctrl: ctrlUsername,
+                    validator: isValidate ? 'Username Can\'t Be Empty' : null,
+                  ),
+                  SizedBox(
+                    height: mediaQuery.size.height * 0.06,
+                  ),
+                  CTextField(
+                    name: "Password",
+                    ctrl: ctrlPassword,
+                    obscureText: showPassword,
+                    validator: isValidate ? 'Password Can\'t Be Empty' : null,
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          showPassword = !showPassword;
+                        });
+                      },
+                      child: Icon(
+                        showPassword ? Icons.visibility_off : Icons.visibility,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: mediaQuery.size.height * 0.15,
+                  ),
+                  Center(
+                      child: CButton(
+                    name: 'Login',
+                    onPressed: () {
+                      setState(() {
+                        validateCtrl(ctrlUsername.text, ctrlPassword.text)
+                            .then((value) {
+                          if (value == false) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      TodoView(name: ctrlUsername.text),
+                                ));
+                          }
+                        });
+                      });
+                    },
+                  )),
+                  SizedBox(
+                    height: mediaQuery.size.height * 0.15,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't Have Account? "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterView(),
+                                ));
+                          },
+                          child: const Text(
+                            "Create Account",
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
-            Stack(
-              children: [
-                SizedBox(
-                    width: mediaQuery.size.width,
-                    height: mediaQuery.size.height * 0.8,
-                    child: Image.asset(
-                      'assets/images/bg-login.png',
-                      fit: BoxFit.cover,
-                    )),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: mediaQuery.size.height * 0.15,
-                      ),
-                      CTextField(
-                        name: "Username",
-                        ctrl: ctrlUsername,
-                        validator:
-                            isValidate ? 'Username Can\'t Be Empty' : null,
-                      ),
-                      SizedBox(
-                        height: mediaQuery.size.height * 0.06,
-                      ),
-                      CTextField(
-                        name: "Password",
-                        ctrl: ctrlPassword,
-                        obscureText: showPassword,
-                        validator:
-                            isValidate ? 'Password Can\'t Be Empty' : null,
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              showPassword = !showPassword;
-                            });
-                          },
-                          child: Icon(
-                            showPassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: mediaQuery.size.height * 0.15,
-                      ),
-                      Center(
-                          child: CButton(
-                        name: 'Login',
-                        onPressed: () {
-                          setState(() {
-                            validateCtrl(ctrlUsername.text, ctrlPassword.text)
-                                .then((value) {
-                              if (value == false) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          TodoView(name: ctrlUsername.text),
-                                    ));
-                              }
-                            });
-                          });
-                        },
-                      )),
-                      Center(
-                        child: Container(
-                          height: mediaQuery.size.height * 0.2,
-                          padding: const EdgeInsets.symmetric(vertical: 32),
-                          child: RichText(
-                              text: TextSpan(
-                                  text: "Don't Have Account? ",
-                                  style: const TextStyle(
-                                    color: Colors.black87,
-                                  ),
-                                  children: [
-                                TextSpan(
-                                    text: "Create Account",
-                                    style: const TextStyle(
-                                      color: Colors.lightBlueAccent,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                RegisterView(),
-                                          )))
-                              ])),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
