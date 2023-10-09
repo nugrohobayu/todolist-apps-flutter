@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:todolist_apps/components/c_button.dart';
+import 'package:todolist_apps/components/c_text_field.dart';
 
 import '../models/todo_list_model.dart';
 
@@ -14,76 +16,166 @@ class TodoView extends StatefulWidget {
 class _TodoViewState extends State<TodoView> {
   bool isChecked = false;
   DateTime now = DateTime.now();
+  TextEditingController ctrlTitle = TextEditingController();
+  TextEditingController ctrlDetail = TextEditingController();
   var formattedDate = DateFormat('yMMMMd');
   List<TodoListModel> todoList = [
     TodoListModel(
       title: "Learning Dart",
-      location: "Univ Bhayangkara",
-      date: "startDate",
+      detail: "Basic dart ",
       status: false,
     ),
     TodoListModel(
       title: "Learning Flutter",
-      location: "Univ Bhayangkara",
-      date: "startDate",
+      detail: "Basic flutter ",
       status: false,
     ),
   ];
+
+  addList(
+    String titleList,
+    String detailList,
+  ) {
+    todoList.add(TodoListModel(
+      title: titleList,
+      detail: detailList,
+      status: false,
+    ));
+  }
+
+  clearList(index) {
+    setState(() {
+      todoList.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     final mediaQuery = MediaQuery.of(context);
 
+    dialogAddList() {
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+            content: SizedBox(
+              width: mediaQuery.size.width,
+              height: mediaQuery.size.height * 0.5,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 16,
+                ),
+                child: Column(
+                  children: [
+                    const Text("Add your to do list"),
+                    SizedBox(height: mediaQuery.size.height * 0.05),
+                    CTextField(
+                      name: 'Title',
+                      ctrl: ctrlTitle,
+                    ),
+                    SizedBox(height: mediaQuery.size.height * 0.05),
+                    CTextField(
+                      name: 'Detail',
+                      ctrl: ctrlDetail,
+                    ),
+                    SizedBox(height: mediaQuery.size.height * 0.05),
+                    CButton(
+                      name: 'Create',
+                      onPressed: () {
+                        setState(() {
+                          addList(ctrlTitle.text, ctrlDetail.text);
+                          if (mounted) {
+                            Navigator.pop(context);
+                          }
+                        });
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     checkedList() {
-      return ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: todoList.length,
-          itemBuilder: (context, index) {
-            final TodoListModel todo = todoList[index];
-            return todo.status == true
-                ? Card(
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: todo.status,
-                          onChanged: (value) {
-                            setState(() {
-                              todo.status = value!;
-                            });
-                          },
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Checked tasks :",
+            style: TextStyle(color: color.primary),
+          ),
+          ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: todoList.length,
+              itemBuilder: (context, index) {
+                final TodoListModel todo = todoList[index];
+                return todo.status == true
+                    ? Card(
+                        elevation: 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              todo.title,
-                              style: const TextStyle(
-                                  decoration: TextDecoration.lineThrough),
+                            SizedBox(
+                              width: mediaQuery.size.width * 0.1,
+                              child: Checkbox(
+                                value: todo.status,
+                                onChanged: (value) {
+                                  setState(() {
+                                    todo.status = value!;
+                                  });
+                                },
+                              ),
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  todo.date,
-                                  style: const TextStyle(
-                                      decoration: TextDecoration.lineThrough),
-                                ),
-                                SizedBox(width: mediaQuery.size.width * 0.01),
-                                Text(
-                                  "at ${todo.location}",
-                                  style: const TextStyle(
-                                      decoration: TextDecoration.lineThrough),
-                                ),
-                              ],
+                            SizedBox(
+                              width: mediaQuery.size.width * 0.7,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    todo.title,
+                                    style: const TextStyle(
+                                        decoration: TextDecoration.lineThrough),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        todo.detail,
+                                        style: const TextStyle(
+                                            decoration:
+                                                TextDecoration.lineThrough),
+                                      ),
+                                      SizedBox(
+                                          width: mediaQuery.size.width * 0.01),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  clearList(index);
+                                });
+                              },
+                              child: const Icon(Icons.delete),
                             )
                           ],
                         ),
-                      ],
-                    ),
-                  )
-                : const SizedBox();
-          });
+                      )
+                    : const Center();
+              }),
+        ],
+      );
     }
 
     unCheckedList() {
@@ -95,29 +187,44 @@ class _TodoViewState extends State<TodoView> {
             final TodoListModel todo = todoList[index];
             return todo.status == false
                 ? Card(
+                    elevation: 5,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Checkbox(
-                          value: todo.status,
-                          onChanged: (value) {
+                        SizedBox(
+                          width: mediaQuery.size.width * 0.1,
+                          child: Checkbox(
+                            value: todo.status,
+                            onChanged: (value) {
+                              setState(() {
+                                todo.status = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: mediaQuery.size.width * 0.7,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                todo.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(todo.detail),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
                             setState(() {
-                              todo.status = value!;
+                              clearList(index);
                             });
                           },
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(todo.title),
-                            Row(
-                              children: [
-                                Text(todo.date),
-                                SizedBox(width: mediaQuery.size.width * 0.01),
-                                Text("at ${todo.location}"),
-                              ],
-                            )
-                          ],
-                        ),
+                          child: const Icon(Icons.delete),
+                        )
                       ],
                     ),
                   )
@@ -150,7 +257,7 @@ class _TodoViewState extends State<TodoView> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -191,7 +298,7 @@ class _TodoViewState extends State<TodoView> {
           color: Colors.deepOrange,
         ),
         onPressed: () {
-          print("object");
+          dialogAddList();
         },
       ),
     );
