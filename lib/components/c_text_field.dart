@@ -13,7 +13,7 @@ class CTextField extends StatelessWidget {
   final Widget? suffixIcon, suffixLable;
   final Widget? prefixIcon;
   final TextInputType? keyboardType;
-  final FormFieldValidator<String>? validator;
+  final String? validator;
   final bool? obscureText;
   final int? maxLength;
   final ValueChanged<String>? onChanged;
@@ -60,16 +60,15 @@ class CTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context);
 
-    return SizedBox(
-      height: mediaQuery.size.height * 0.08,
-      child: TextField(
-        controller: ctrl,
-        obscureText: obscureText ?? false,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          labelText: name,
-          // errorText: validator
-        ),
+    return TextField(
+      controller: ctrl,
+      obscureText: obscureText ?? false,
+      keyboardType: keyboardType,
+      onTap: onTap,
+      decoration: InputDecoration(
+        labelText: name,
+        errorText: validator,
+        suffixIcon: suffixIcon,
       ),
     );
   }
