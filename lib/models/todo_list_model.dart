@@ -1,13 +1,11 @@
 class TodoListModel {
   String title;
-  String location;
-  String date;
+  String detail;
   bool status;
 
   TodoListModel({
     required this.title,
-    required this.location,
-    required this.date,
+    required this.detail,
     required this.status,
   });
 }
